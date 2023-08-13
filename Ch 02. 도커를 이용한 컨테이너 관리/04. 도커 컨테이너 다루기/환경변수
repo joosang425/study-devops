@@ -1,0 +1,4 @@
+```bash
+$ env    // env 명령어를 통해 도커 컨테이너의 환경변수를 추가할 수 있다.
+$ docker run -i -t -e MY_HOST=fastcampus.com ubuntu:focal bash    // MY_HOST=fastcampus 환경 변수가 도커 컨테이너에 주입
+```
