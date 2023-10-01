@@ -1,0 +1,57 @@
+# Jenkins 소개와 설치
+## Jenkins 소개
+- 젠킨스(Jenkins)는 소프트웨어 개발 시 지속적 통합(Continuous Integration) 서비스를 제공하는 툴
+- 다수의 개발자들이 하나의 프로그램을 개발할 때 버전 충돌을 방지하기 위해 각자 작업한 내용을 공유 영역에 있는 Git 등의 저장소에 빈번히 업로드함으로써 지속적 통합이 가능
+
+## Jenkins 설치 명령어 목록
+```bash
+# Jenkins 컨테이너 실행 명령어
+$ docker run --name jenkins -d -p 8080:8080 -v ~/jenkins:/var/jenkins_home -u root jenkins/jenkins:latest
+
+# Admin Password 확인 명령어
+$ docker exec -it jenkins bash -c "cat /var/jenkins_home/secrets/initialAdminPassword"
+```
+
+## 플러그인 설치
+- Jenkins DSL 플러그인 설치
+- Jenkins Pipeline 플러그인 설치
+- Github 플러그인 설치
+- Docker 플러그인 설치
+- AWS 플러그인 설치 -> AWS 이용 시 설치 필요
+- SSH 플러그인 설치
+  - 22번 포트를 이용하기 위해
+
+## 인증 설정
+- SSH Key 생성(로컬)
+- Github 인증 설정(ssh-key)
+- AWS 인증 설정(aws-key) -> AWS 이용 시 설정 필요
+- 배포 서버 인증 설정(deploy-key)
+
+## 로컬에서 Git Repository 연동을 위한 SSH Key 생성
+```bash
+# 로컬에서 pem 키 전용 디렉토리 생성 및 이동
+$ mkdir -p ~/pems/jenkins
+$ cd ~/pems/jenkins
+
+# pems 디렉토리에서 Git Repository 연동을 위한 SSH Key 생성 명령어
+$ ssh-keygen -t ed25519 -a 100 -f <SSH Key명>
+```
+- ed25519라는 알고리즘을 이용
+- 생성될 때까지 Enter를 눌러 기본값 설정
+- 2개의 Key 파일 생성 확인 : <SSH Key명>, <SSH Key명>.pub
+  - .pub가 붙지 않은 파일은 private key
+
+![SSH_Key_생성](https://github.com/joosang425/study-devops/assets/68217970/98ccdb20-3ec1-423d-a626-e5ef68064021)
+
+## Github Repository 연동
+- Github Repository에 Deploy Key를 설정
+  1. 코드가 저장된 Github Repository에 접속
+  2. 상단 Tab 중 "Settings"를 클릭
+  3. 좌측 메뉴 중 Security > Deploy Keys 클릭
+  4. 우측 중간에 있는 "Add deploy key" 클릭
+  5. 다음의 정보를 입력 후 "Add key" 버튼 클릭
+     - Title(제목) 입력(ssh-key)
+     - Key(Public SSH key인 ssh-key.pub 내용 복사) 붙여넣기
+     - Allo write access 체크 선택
+
+&#8251; Github에선 public key를 사용하고 Jenkins에선 private key를 사용
